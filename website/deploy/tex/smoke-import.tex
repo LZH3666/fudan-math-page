@@ -1,0 +1,192 @@
+% FudanEngine: xelatex
+\documentclass[UTF8,11pt,a4paper,oneside]{ctexbook}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs,extarrows}
+\usepackage{dsfont}
+\xeCJKsetup{CJKmath=true}
+\providecommand{\widecheck}[1]{\check{#1}}
+\let\bstextdot\.
+\renewcommand{\.}[1]{\ifmmode\dot{#1}\else\bstextdot{#1}\fi}
+\let\bstextddot\"
+\renewcommand{\"}[1]{\ifmmode\ddot{#1}\else\bstextddot{#1}\fi}
+\newcommand{\bsdot}[1]{\ifmmode\dot{#1}\else\bstextdot{#1}\fi}
+\newcommand{\bsddot}[1]{\ifmmode\ddot{#1}\else\bstextddot{#1}\fi}
+\IfFontExistsTF{Segoe UI Symbol}{\newfontfamily\bssymbolfont{Segoe UI Symbol}}{\newfontfamily\bssymbolfont{DejaVu Sans}}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\PassOptionsToPackage{shortlabels}{enumitem}
+\usepackage{graphicx,xcolor,enumitem,longtable,array,booktabs,multirow,arydshln}
+\newcolumntype{C}{>{\centering\arraybackslash}p{1.1cm}}
+\usepackage[normalem]{ulem}
+\usepackage{cancel}
+\colorlet{grey}{gray}
+\definecolor{gold}{HTML}{FFD700}
+\let\bsoldsout\sout
+\renewcommand{\sout}[1]{\ifmmode\cancel{#1}\else\bsoldsout{#1}\fi}
+\usepackage{tikz,tikz-cd}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows,arrows.meta,calc,positioning,patterns,decorations.markings,cd,angles,quotes,intersections,shapes.geometric,decorations.pathreplacing}
+\usepackage{hyperref}
+\hypersetup{hidelinks,bookmarksnumbered=true}
+\usepackage{fancyvrb,fvextra}
+\setlength{\emergencystretch}{4em}
+\setlist{nosep}
+\allowdisplaybreaks
+\tikzset{vertex/.style={circle,fill=black,inner sep=1.4pt},edge_arrow/.style={->}}
+\newcommand{\setdisplaytitle}[1]{}
+\newcommand{\sethtmltitle}[1]{}
+\newcommand{\bsurl}[1]{\href{#1}{原网页}}
+\newenvironment{structure}{\begin{itemize}}{\end{itemize}}
+\newenvironment{references}{\begin{thebibliography}{99}}{\end{thebibliography}}
+\newenvironment{cd}{\begin{tikzcd}}{\end{tikzcd}}
+\newenvironment{enhanced}{}{}
+\NewDocumentCommand{\subpage}{t! m o}{\item \IfNoValueTF{#3}{#2}{#3}}
+\makeatletter
+\let\bsoriginalnewcommand\newcommand
+\def\bsnewcommand{\@ifstar{\bsnc}{\bsnc}}
+\def\bsnc#1{\ifdefined#1\expandafter\renewcommand\else\expandafter\bsoriginalnewcommand\fi{#1}}
+\newcommand{\bssetcounter}[1]{\setcounter{\@enumctr}{#1}}
+\makeatother
+\providecommand{\R}{\mathbb{R}}
+\providecommand{\C}{\mathbb{C}}
+\providecommand{\N}{\mathbb{N}}
+\providecommand{\Z}{\mathbb{Z}}
+\providecommand{\Q}{\mathbb{Q}}
+\providecommand{\F}{\mathbb{F}}
+\providecommand{\K}{\mathbb{K}}
+\providecommand{\D}{\mathbb{D}}
+\providecommand{\T}{\mathbb{T}}
+\providecommand{\eps}{\varepsilon}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\varOmega}{\Omega}
+\providecommand{\varGamma}{\Gamma}
+\providecommand{\varPhi}{\Phi}
+\providecommand{\varSigma}{\Sigma}
+\providecommand{\varLambda}{\Lambda}
+\providecommand{\varTheta}{\Theta}
+\providecommand{\varDelta}{\Delta}
+\providecommand{\varPsi}{\Psi}
+\providecommand{\varXi}{\Xi}
+\providecommand{\varPi}{\Pi}
+\providecommand{\la}{\langle}
+\providecommand{\ra}{\rangle}
+\providecommand{\rr}{\mathbb{R}}
+\providecommand{\ii}{\mathrm{i}}
+\providecommand{\dd}{\mathrm{d}}
+\providecommand{\supp}{\operatorname{supp}}
+\providecommand{\Span}{\operatorname{span}}
+\providecommand{\Ran}{\operatorname{Ran}}
+\providecommand{\rank}{\operatorname{rank}}
+\providecommand{\diag}{\operatorname{diag}}
+\providecommand{\diam}{\operatorname{diam}}
+\providecommand{\dist}{\operatorname{dist}}
+\providecommand{\esssup}{\operatorname*{ess\,sup}}
+\providecommand{\essinf}{\operatorname*{ess\,inf}}
+\providecommand{\id}{\operatorname{id}}
+\providecommand{\Hom}{\operatorname{Hom}}
+\providecommand{\End}{\operatorname{End}}
+\providecommand{\Aut}{\operatorname{Aut}}
+\providecommand{\Ker}{\operatorname{Ker}}
+\providecommand{\image}{\operatorname{Im}}
+\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}
+\providecommand{\inj}{\operatorname{inj}}
+\providecommand{\qed}{\hfill\ensuremath{\square}}
+\providecommand{\tmod}{\operatorname{mod}}
+\providecommand{\bbZ}{\mathbb{Z}}
+\providecommand{\bbQ}{\mathbb{Q}}
+\providecommand{\bbR}{\mathbb{R}}
+\providecommand{\bbC}{\mathbb{C}}
+\providecommand{\bbN}{\mathbb{N}}
+\providecommand{\exist}{\exists}
+\providecommand{\plusmn}{\pm}
+\providecommand{\Beta}{\mathrm{B}}
+\providecommand{\ch}{\cosh}
+\providecommand{\sh}{\sinh}
+\providecommand{\th}{\tanh}
+\providecommand{\lt}{<}
+\providecommand{\gt}{>}
+\providecommand{\bbZx}{\mathbb{Z}[[x]]}
+\providecommand{\B}{\mathbb{B}}
+\providecommand{\notni}{\not\ni}
+\providecommand{\infin}{\infty}
+\providecommand{\sm}{\setminus}
+\providecommand{\mathbbm}{\mathbb}
+\providecommand{\alef}{\aleph}
+\def\pdef#1\)#2{}
+\newcommand{\textsize}[2]{{\fontsize{#1}{1.25\dimexpr#1\relax}\selectfont #2}}
+\newcommand{\textalign}[2]{#2}
+\newcommand{\printfootnotes}{}
+\newcommand{\nosectionnumbers}{\setcounter{secnumdepth}{0}}
+\newcommand{\english}{}
+\providecommand{\dis}{\displaystyle}
+\providecommand{\red}[1]{\textcolor{red}{#1}}
+\providecommand{\blue}[1]{\textcolor{blue}{#1}}
+
+\begin{document}
+\setcounter{chapter}{1}
+\section{导入排版检查}
+这是为 XeLaTeX 构建编写的示例。下文包含中文、公式、列表、表格和图形。
+
+\begingroup
+\let\newcommand\bsnewcommand
+\newcommand{\smokevalue}{q}
+\newcommand{\smokevalue}{u}
+\[
+  \smokevalue(t)=t^2,\qquad
+  \bsdot{u}(t)=2t,\qquad
+  \bsddot{u}(t)=2,\qquad
+  \widecheck{u}=\bm{v}\in\R^2.
+\]
+\endgroup
+
+令 $\mathscr{A}=\{0,1\}$，用 $\mathds{1}_{\mathscr A}$ 表示示例函数。
+\begin{align*}
+  \norm{\bm{v}}^2 &= \abs{v_1}^2+\abs{v_2}^2,\\
+  (1+x)^2 &\xlongequal{x=0} 1+\sout{2x}+\sout{x^2}.
+\end{align*}
+文本中的\sout{划线}和\textcolor{gold}{颜色}也用于检查排版。
+
+\begin{structure}
+  \subpage{导入样例}[可选目录标签]
+  \subpage!{附录标签}
+\end{structure}
+\begin{enumerate}[(i)]
+  \item 计算 $1+1$。
+  \bssetcounter{2}
+  \item 绘制从 $0$ 到 $1$ 的线段。
+\end{enumerate}
+
+\begin{longtable}{lCC}
+  \toprule
+  标记 & 输入 & 输出 \\
+  \midrule
+  \multirow{2}{*}{样例} & $0$ & $1$ \\
+  \cdashline{2-3}
+                         & $1$ & $2$ \\
+  \bottomrule
+\end{longtable}
+
+\[
+\begin{cd}
+  X \arrow[r,"f"] \arrow[d,"g"'] & Y \arrow[d,"h"] \\
+  Z \arrow[r,"k"'] & W
+\end{cd}
+\qquad
+\begin{tikzpicture}[baseline]
+  \begin{axis}[width=4cm,height=3cm,axis lines=middle,ticks=none]
+    \addplot[blue,domain=0:1,samples=5]{x};
+  \end{axis}
+\end{tikzpicture}
+\]
+
+\begin{Verbatim}
+\input{example.tex} % displayed without being executed
+\end{Verbatim}
+\href{https://example.com/}{示例链接}
+\begin{references}
+  \bibitem{smoke} 排版检查条目。
+\end{references}
+\end{document}

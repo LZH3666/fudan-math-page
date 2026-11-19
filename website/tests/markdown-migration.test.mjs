@@ -1,0 +1,5 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {convertSource} from '../markdown-migration.mjs';
+test('exact source coverage and unchanged math',()=>{const source='正文。\n\\section{定义}\n\\begin{definition}\n$x+1$。\n\\end{definition}\n% 私有注释\n';const r=convertSource(source);assert.equal(r.spans.map(s=>s.original).join(''),source);assert.equal(r.sourceHash,r.reconstructedHash);assert.match(r.markdown,/::: definition/);assert.match(r.markdown,/\$x\+1\$/);assert.match(r.markdown,/<!--\s+私有注释 -->/);assert.equal(r.eligible,true)});
+test('ambiguous comment environment and unknown macro cannot be published',()=>{assert.equal(convertSource('\\begin{comment}不能猜\\end{comment}').eligible,false);assert.equal(convertSource('\\custom{内容}').eligible,false)});
+test('escaped percent is not a source comment; unclosed math blocks migration',()=>{assert.equal(convertSource('\\% 后面').spans.some(s=>s.kind==='source-comment'),false);assert.equal(convertSource('$未闭合').eligible,false)});

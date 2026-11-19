@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ .Params.lang | default .Site.Language.Lang }}"{{ if hugo.IsDevelopment }}{{ with .File }} data-source="{{ .Path }}"{{ end }}{{ end }}{{ with .Params.typography }}{{ if eq .convertChineseFullStop false }} data-typography-full-stop="false"{{ end }}{{ end }}>
+
+<head>
+  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+  {{ partial "head.html" . }}
+  {{ if .Site.Params.fudanEmbedded }}<style>a[href*="/edit/"]{display:none}</style>{{ end }}
+</head>
+
+<body class="wrapper">
+  {{ if not .Site.Params.fudanEmbedded }}{{ partial "header.html" . }}{{ end }}
+
+  <main class="content">
+    {{ block "content" . }}{{ end }}
+  </main>
+
+  {{ if not .Site.Params.fudanEmbedded }}{{ partial "footer.html" . }}{{ end }}
+</body>
+
+</html>

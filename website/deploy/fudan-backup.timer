@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Fudan library backup
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+RandomizedDelaySec=10m
+Unit=fudan-backup.service
+
+[Install]
+WantedBy=timers.target

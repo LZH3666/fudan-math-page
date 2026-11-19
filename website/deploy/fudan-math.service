@@ -1,0 +1,27 @@
+[Unit]
+Description=Fudan math resource library
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=fudan-math
+Group=fudan-math
+WorkingDirectory=/opt/fudan-math/current
+EnvironmentFile=/etc/fudan-math/site.env
+ExecStart=/opt/fudan-math/runtime/bin/node server.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/fudan-math
+RestrictAddressFamilies=AF_INET AF_INET6
+InaccessiblePaths=-/run/docker.sock -/var/run/docker.sock
+
+[Install]
+WantedBy=multi-user.target

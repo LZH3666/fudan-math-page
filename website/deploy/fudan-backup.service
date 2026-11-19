@@ -1,0 +1,22 @@
+[Unit]
+Description=Consistent Fudan library backup and verified retention
+After=fudan-math.service
+
+[Service]
+Type=oneshot
+User=fudan-math
+Group=fudan-math
+WorkingDirectory=/opt/fudan-math/current
+EnvironmentFile=/etc/fudan-math/backup.env
+ExecStart=/opt/fudan-math/runtime/bin/node scripts/backup.mjs create
+ExecStart=/opt/fudan-math/runtime/bin/node scripts/backup.mjs prune --apply
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+# SQLite read-only WAL readers may create/update the shared-memory sidecar.
+ReadWritePaths=/var/lib/fudan-math /var/backups/fudan-math
+RestrictAddressFamilies=AF_UNIX
+

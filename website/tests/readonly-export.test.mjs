@@ -1,0 +1,30 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
+import {exportReadonly} from '../scripts/export-readonly.mjs';
+
+test('readonly export includes only published content, keeps math and links, deduplicates resources and omits identity/backend',t=>{
+ const folder=fs.mkdtempSync(path.join(os.tmpdir(),'fudan-readonly-'));t.after(()=>fs.rmSync(folder,{recursive:true,force:true}));
+ const dbPath=path.join(folder,'library.sqlite'),db=new DatabaseSync(dbPath),artifact='a'.repeat(64),media='b'.repeat(64)+'.pdf';
+ db.exec(`CREATE TABLE subjects(id,title,position,archived);CREATE TABLE courses(id,title,subject,position,home_id,archived);CREATE TABLE documents(id,course_id,title,tex,preamble,render_mode,artifact,parent_id,position,is_course_home,version,archived);CREATE TABLE users(secret);INSERT INTO users VALUES('private-credential-marker');INSERT INTO subjects VALUES('analysis','分析',0,0);INSERT INTO courses VALUES('course','课程','analysis',0,'home',0);`);
+ const insert=db.prepare('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?,?,?,?,?)');
+ insert.run('home','course','课程','公开正文','','markdown',artifact,null,0,1,1,0);
+ insert.run('child','course','子页','公式','','markdown',artifact,'home',1,0,1,0);
+ insert.run('private','course','已归档','archived-secret-marker','','markdown',artifact,'home',2,0,1,1);db.close();
+ const publicDir=path.join(folder,'markdown',artifact,'public');fs.mkdirSync(path.join(publicDir,'books/page'),{recursive:true});fs.mkdirSync(path.join(publicDir,'css'));fs.mkdirSync(path.join(folder,'assets'));
+ fs.writeFileSync(path.join(publicDir,'css/site.css'),'body{color:black}');fs.writeFileSync(path.join(folder,'assets',media),'synthetic-public-pdf');
+ const math='<span class="math" data-tex="x+y=z" style="height:3em;margin-right:0.2em;">x + y = z</span>';
+ fs.writeFileSync(path.join(publicDir,'books/page/index.html'),'<html><head><link rel="stylesheet" href="/markdown/'+artifact+'/css/site.css"><script src="/edit.js"></script></head><body>'+math+'<a href="/?mdDoc=child&amp;mdAnchor=eq-1#/doc/child" target="_parent">公式1</a><a href="/media/'+media+'">附件</a><p class="edit-page"><a href="/markdown/'+artifact+'/edit/">编辑本页</a></p></body></html>');
+ const target=path.join(folder,'release'),out=exportReadonly({dbPath,target});
+ assert.equal(out.documents,2);assert.equal(out.files.filter(f=>f.path.startsWith('assets/')).length,2);
+ const html=fs.readFileSync(path.join(target,'pages/child.html'),'utf8');assert.ok(html.includes('data-tex="x+y=z"'));assert.ok(html.includes('x + y = z</span>'));assert.ok(html.includes('mdDoc=child&amp;mdAnchor=eq-1'));assert.match(html,/fudan-reader-layout/);assert.doesNotMatch(html,/<script|编辑本页/);
+ assert.match(html,/class="math r0"/);assert.equal(fs.readFileSync(path.join(target,'math-layout.css'),'utf8'),'.r0{height:3em!important;margin-right:0.2em!important}');
+ const snapshot=fs.readFileSync(path.join(target,'snapshot.json'),'utf8');assert.doesNotMatch(snapshot,/private-credential-marker|archived-secret-marker|email|password|csrf|user_id/);
+ assert.doesNotMatch(fs.readFileSync(path.join(target,'app.js'),'utf8'),/\/api|auth\/|bind-email/);
+ assert.throws(()=>exportReadonly({dbPath,target}),/已存在/);
+ fs.writeFileSync(path.join(publicDir,'books/page/index.html'),'<html><head></head><body><a href="/?mdDoc=private#/doc/private">归档</a></body></html>');
+ assert.throws(()=>exportReadonly({dbPath,target:path.join(folder,'bad')}),/未公开页面/);
+});

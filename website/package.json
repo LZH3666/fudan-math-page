@@ -1,0 +1,30 @@
+{
+  "name": "fudan-math-library",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-course-catalog.mjs && node scripts/build-assets.mjs",
+    "prestart": "npm run build",
+    "release:check": "node scripts/check-release.mjs",
+    "release:prepare": "node scripts/check-release.mjs",
+    "test:guide-import": "node --test tests/guide-import.test.mjs",
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:tex": "node --test tests/compiler.integration.mjs",
+    "test:isolated": "node --env-file-if-exists=.env --test tests/isolated.integration.mjs",
+    "test:load": "node --env-file-if-exists=.env tests/release-load.mjs",
+    "test:proxy": "node tests/proxy-rehearsal.mjs",
+    "start:compiler": "node --env-file=.env compile-worker.mjs",
+    "backup": "node --env-file-if-exists=.env scripts/backup.mjs create"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "diff": "8.0.2",
+    "katex": "0.19.0",
+    "nodemailer": "10.1.0",
+    "pdfjs-dist": "6.4.299"
+  }
+}

@@ -1,0 +1,25 @@
+# Replace math.example.org and obtain the certificate before enabling this file.
+server {
+    listen 80;
+    server_name math.example.org;
+    return 301 https://math.example.org$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name math.example.org;
+    ssl_certificate /etc/letsencrypt/live/math.example.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/math.example.org/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 8m;
+    location / {
+        proxy_pass http://127.0.0.1:4318;
+        proxy_http_version 1.1;
+        proxy_set_header Host math.example.org;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # Replace, never append user-supplied forwarding headers.
+        proxy_set_header X-Forwarded-For $remote_addr;
+        # The compiler client allows 160s (one active job and four queued jobs).
+        # Keep the proxy open beyond that deadline so it returns the app result.
+        proxy_read_timeout 180s;
+    }
+}

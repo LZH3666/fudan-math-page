@@ -1,0 +1,26 @@
+[Unit]
+Description=Fudan isolated TeX compile broker
+After=docker.service network.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=fudan-compile
+Group=fudan-compile
+SupplementaryGroups=docker
+WorkingDirectory=/opt/fudan-math/current
+EnvironmentFile=/etc/fudan-math/compile.env
+ExecStart=/opt/fudan-math/runtime/bin/node compile-worker.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=40
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+InaccessiblePaths=/var/lib/fudan-math /etc/fudan-math/site.env
+
+[Install]
+WantedBy=multi-user.target
